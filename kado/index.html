@@ -64,7 +64,7 @@ button.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #d9709f; }
 button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
 /* Countdown */
-.lock { font-family: var(--font-display); font-size: 3rem; line-height: 1; cursor: default; user-select: none; color: var(--gold); }
+.lock { font-family: var(--font-display); font-size: 2rem; line-height: 1; cursor: default; user-select: none; color: var(--gold); }
 .clock { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; }
 .unit { display: flex; flex-direction: column; align-items: center; gap: .3rem; min-width: 4.2rem; padding: .8rem .6rem; border-radius: 14px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 224, 138, .25); }
 .unit b { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 9vw, 2.8rem); color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
@@ -522,12 +522,12 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
       c.querySelector('.chip-clock').textContent = fmt(s);
     });
   }
-  // Jalan pintas buat ngetes: tap bintang di atas 5 kali cepat
+  // Jalan pintas rahasia buat ngetes: tap kotak "detik" 10 kali cepat
   let taps = 0, tapTimer;
-  $('lock').addEventListener('click', () => {
+  $('cSecs').parentElement.addEventListener('click', () => {
     taps++; clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => { taps = 0; }, 1500);
-    if (taps >= 5) unlock();
+    tapTimer = setTimeout(() => { taps = 0; }, 800);
+    if (taps >= 10) { taps = 0; unlock(); }
   });
 
   // Latar bintang kecil
