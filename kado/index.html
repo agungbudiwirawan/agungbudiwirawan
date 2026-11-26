@@ -586,7 +586,17 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
   // Lagu Selamat Ulang Tahun pakai WebAudio
   let actx;
+  // Lagu Happy Birthday dari file mp3; kalau gagal, pakai melodi sintetis
+  const bday = new Audio('happy-birthday.mp3');
+  bday.preload = 'auto';
   function playSong() {
+    try {
+      bday.currentTime = 0;
+      const pr = bday.play();
+      if (pr && pr.catch) pr.catch(playSynth);
+    } catch (e) { playSynth(); }
+  }
+  function playSynth() {
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
       const f = n => 440 * Math.pow(2, (n - 69) / 12);
