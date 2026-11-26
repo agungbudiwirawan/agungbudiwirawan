@@ -64,6 +64,9 @@ button.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #d9709f; }
 button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
 /* Countdown */
+.deco-stars { display: flex; gap: .7rem; justify-content: center; margin-top: .5rem; }
+.deco-stars span { color: var(--gold); font-size: .9rem; opacity: .55; user-select: none; -webkit-user-select: none; cursor: default; transition: transform .2s, opacity .2s; }
+.deco-stars span.tw { transform: scale(1.6); opacity: 1; }
 .lock { font-family: var(--font-display); font-size: 2rem; line-height: 1; cursor: default; user-select: none; color: var(--gold); }
 .clock { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; }
 .unit { display: flex; flex-direction: column; align-items: center; gap: .3rem; min-width: 4.2rem; padding: .8rem .6rem; border-radius: 14px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 224, 138, .25); }
@@ -276,7 +279,6 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 <canvas id="confetti" aria-hidden="true"></canvas>
 
 <section class="stage" id="waitStage">
-  <div class="lock" id="lock" aria-hidden="true">&#9733;</div>
   <h1>Belum waktunya, <span class="name" data-name>kamu</span></h1>
   <div class="clock" role="timer" aria-live="off">
     <div class="unit" id="uDays"><b id="cDays">0</b><span>hari</span></div>
@@ -292,6 +294,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
       <button class="btn" id="toStack">Menara Kue</button>
     </div>
   </div>
+  <div class="deco-stars" id="decoStars" aria-hidden="true"></div>
 </section>
 
 <section class="stage" id="gameStage" hidden>
@@ -522,13 +525,21 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
       c.querySelector('.chip-clock').textContent = fmt(s);
     });
   }
-  // Jalan pintas rahasia buat ngetes: tap kotak "detik" 10 kali cepat
+  // Jalan pintas rahasia buat ngetes: deretan bintang kecil di bawah,
+  // cuma bintang ke-5 dari kiri yang aktif, tap 5 kali cepat
   let taps = 0, tapTimer;
-  $('cSecs').parentElement.addEventListener('click', () => {
-    taps++; clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => { taps = 0; }, 800);
-    if (taps >= 10) { taps = 0; unlock(); }
-  });
+  for (let i = 0; i < 7; i++) {
+    const st = document.createElement('span');
+    st.textContent = '★';
+    st.addEventListener('click', () => {
+      st.classList.add('tw'); setTimeout(() => st.classList.remove('tw'), 250);
+      if (i !== 4) { taps = 0; return; }
+      taps++; clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { taps = 0; }, 900);
+      if (taps >= 5) { taps = 0; unlock(); }
+    });
+    $('decoStars').appendChild(st);
+  }
 
   // Latar bintang kecil
   const sky = $('sky'), sctx = sky.getContext('2d');
