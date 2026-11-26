@@ -64,6 +64,13 @@ button.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #d9709f; }
 button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
 /* Countdown */
+.music-btn {
+  position: fixed; z-index: 7;
+  right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, .12); color: var(--gold); font-size: 1.2rem; line-height: 1;
+}
+.music-btn.off { color: var(--muted); text-decoration: line-through; opacity: .6; }
 .deco-stars { display: flex; gap: .7rem; justify-content: center; margin-top: .5rem; }
 .deco-stars span { color: var(--gold); font-size: .9rem; opacity: .55; user-select: none; -webkit-user-select: none; cursor: default; transition: transform .2s, opacity .2s; }
 .deco-stars span.tw { transform: scale(1.6); opacity: 1; }
@@ -277,6 +284,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 
 <canvas id="sky" aria-hidden="true"></canvas>
 <canvas id="confetti" aria-hidden="true"></canvas>
+<button class="music-btn" id="musicBtn" aria-label="Matikan musik" hidden>&#9835;</button>
 
 <section class="stage" id="waitStage">
   <h1>Belum waktunya, <span class="name" data-name>kamu</span></h1>
@@ -600,13 +608,19 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
   // Lagu Happy Birthday dari file mp3; kalau gagal, pakai melodi sintetis
   const bday = new Audio('happy-birthday.mp3');
   bday.preload = 'auto';
+  bday.loop = true;
   function playSong() {
     try {
       bday.currentTime = 0;
       const pr = bday.play();
-      if (pr && pr.catch) pr.catch(playSynth);
+      if (pr && pr.then) pr.then(() => { $('musicBtn').hidden = false; }, playSynth);
     } catch (e) { playSynth(); }
   }
+  $('musicBtn').addEventListener('click', () => {
+    const b = $('musicBtn');
+    if (bday.paused) { bday.play().catch(() => {}); b.classList.remove('off'); b.setAttribute('aria-label', 'Matikan musik'); }
+    else { bday.pause(); b.classList.add('off'); b.setAttribute('aria-label', 'Nyalakan musik'); }
+  });
   function playSynth() {
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
