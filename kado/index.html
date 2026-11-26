@@ -652,6 +652,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
   const open = () => {
     if (opening) return;
     opening = true;
+    playSong();
     const env = $('envelope');
     env.classList.add('opening');
     if (!reduce) setTimeout(() => hearts(env), 700);
@@ -800,7 +801,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
   function stopGame() { clearInterval(spawnTimer); spawnTimer = null; }
 
   $('toStars').addEventListener('click', () => { show('starsStage'); startGame(); });
-  $('toLetter').addEventListener('click', () => { stopGame(); show('letterStage'); burst(); playSong(); });
+  $('toLetter').addEventListener('click', () => { stopGame(); show('letterStage'); burst(); });
   function resetStars() {
     stopGame();
     flying.forEach(f => f.el.remove()); flying = [];
@@ -813,7 +814,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
     $('note').querySelector('.txt').textContent = 'Tap bintang yang lewat. Tiap bintang bawa satu pesan.';
     $('toLetter').hidden = true;
   }
-  $('replay').addEventListener('click', () => { try { bday.pause(); } catch (e) { /* abaikan */ } resetStars(); show('cakeStage'); resetCake(); });
+  $('replay').addEventListener('click', () => { resetStars(); show('cakeStage'); resetCake(); });
 
   // Form hadiah, dikirim lewat link WhatsApp
   const WA_NUMBER = '6283895368580';
